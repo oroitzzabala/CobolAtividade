@@ -80,6 +80,7 @@
 	<!-- cobol_file_set_1 -->
 	<mffilelist type="srcfile" id="cobol_file_set_1" srcdir="${basedir}">
 		<file name="HBSI100O.cbl"/>
+		<file name="HBSI20AO.cbl"/>
 	</mffilelist>
 	<!-- COBOL copybook locations -->
 	<mffilelist id="cobol.copybook.locations">
@@ -101,6 +102,7 @@
 	<!-- Default -->
 	<mffilelist id="cobol.default.object.files.New Configuration" srcdir="${basedir}/New_Configuration.bin" type="objfile">
 		<file name="HBSI100O${mf.objext}"/>
+		<file name="HBSI20AO${mf.objext}"/>
 	</mffilelist>
 	<!--  *************************  -->
 	<!--  * Configuration targets *  -->

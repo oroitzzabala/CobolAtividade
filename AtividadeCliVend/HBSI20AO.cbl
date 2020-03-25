@@ -1,17 +1,16 @@
       *================================================================*
        IDENTIFICATION                  DIVISION.
       *================================================================*
-       PROGRAM-ID. HBSI100O.
+       PROGRAM-ID. HBSI20AO.
        AUTHOR.     TADEU COSTA DE OLIVEIRA.
       *================================================================*
       *           A V A L I A C A O - H B S I S / A M B E V            *
       *----------------------------------------------------------------*
-      *    PROGRAMA....: HBSI100O                                      *
+      *    PROGRAMA....: HBSI20AO                                      *
       *    PROGRAMADOR.: TADEU COSTA DE OLIVEIRA                       *
       *    DATA........: 25/03/2019                                    *
       *----------------------------------------------------------------*
-      *    OBJETIVO....: MENU PRINCIPAL DO SISTEMA DE DISTRIBUICAO DE  *
-      *                  CLIENTES.                                     *
+      *    OBJETIVO....: PROGRAMA PARA CADASTRO DE CLIENTES            *                                                                          
       *----------------------------------------------------------------*
       *    BOOKS USADOS:                                               *
       *    HBSINXXX - DESCRICAO DO BOOK                                *
@@ -53,7 +52,7 @@
       *
       *----------------------------------------------------------------*
        01  FILLER                      PIC  X(050)     VALUE
-           ' HBSI100O - INICIO DA AREA DE WORKING '.
+           ' HBSI20AO - INICIO DA AREA DE WORKING '.
       *----------------------------------------------------------------*
       *
       *----------------------------------------------------------------*
@@ -71,22 +70,17 @@
                      
                        
                          
-       01  RESPONSEZ.
-           05 RESPONSE-IN-WS PIC X     VALUE "C".
-       01  DATA-FROM-SCREEN.
-           05 ID-IN-WS       PIC X(03) VALUE SPACES.
-           05 NAME-IN-WS     PIC X(20) VALUE SPACES.
       *
       *----------------------------------------------------------------*
        01  FILLER                      PIC  X(050)     VALUE
-           ' HBSI100O - FIM DA AREA DE WORKING '.
+           ' HBSI20AO - FIM DA AREA DE WORKING '.
       *----------------------------------------------------------------*
       *
       *----------------------------------------------------------------*
        SCREEN SECTION.
       *----------------------------------------------------------------*
       *
-       01  TELA-INICIAL.
+       01  TELA-CLIENTE.
            05 VALUE "SISTEMA DE CLIENTES E VENDEDORES" 
                                         BLANK SCREEN     LINE  2 COL  2.
            05 VALUE "MENU PRINCIAL"                      LINE  4 COL  2.
@@ -141,8 +135,8 @@
        1010-LOOP-MENU                  SECTION.
       *----------------------------------------------------------------*
       *
-           DISPLAY TELA-INICIAL
-           ACCEPT TELA-INICIAL.
+           DISPLAY TELA-CLIENTE
+           ACCEPT TELA-CLIENTE.
            EVALUATE WRK-OPCAO
               WHEN "01.01"
                   DISPLAY "CADASTRO CLIENTE"
