@@ -39,13 +39,6 @@
        FILE                            SECTION.
       *----------------------------------------------------------------*
       *                                                                *
-
-
-
-
-
-
-
       *
       *----------------------------------------------------------------*
        WORKING-STORAGE                 SECTION.
@@ -64,18 +57,6 @@
        01  WRK-VAR-AUXILIARES.
            05 WRK-OPCAO                PIC X(05)       VALUE SPACES.
            
-             
-               
-                 
-                   
-                     
-                       
-                         
-       01  RESPONSEZ.
-           05 RESPONSE-IN-WS PIC X     VALUE "C".
-       01  DATA-FROM-SCREEN.
-           05 ID-IN-WS       PIC X(03) VALUE SPACES.
-           05 NAME-IN-WS     PIC X(20) VALUE SPACES.
       *
       *----------------------------------------------------------------*
        01  FILLER                      PIC  X(050)     VALUE
@@ -145,9 +126,9 @@
            ACCEPT TELA-INICIAL.
            EVALUATE WRK-OPCAO
               WHEN "01.01"
-                  DISPLAY "CADASTRO CLIENTE"
+                  CALL "HBSI20AO" USING WRK-OPCAO
               WHEN "01.02"
-                  DISPLAY "CADASTRO VENDEDOR"
+                  CALL "HBSI20BO" USING WRK-OPCAO                       
               WHEN "02.01"
                   DISPLAY "RELATORIO CLIENTE"
               WHEN "02.02"
@@ -166,7 +147,7 @@
        2000-PROCESSAR                  SECTION.
       *----------------------------------------------------------------*
       *
-           DISPLAY "Processando".
+           DISPLAY "Processando MAIN".
       *
       *----------------------------------------------------------------*
        2000-99-FIM.                    EXIT.

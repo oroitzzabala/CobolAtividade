@@ -1,16 +1,16 @@
       *================================================================*
        IDENTIFICATION                  DIVISION.
       *================================================================*
-       PROGRAM-ID. HBSI20AO.
+       PROGRAM-ID. HBSI20BO.
        AUTHOR.     TADEU COSTA DE OLIVEIRA.
       *================================================================*
       *           A V A L I A C A O - H B S I S / A M B E V            *
       *----------------------------------------------------------------*
-      *    PROGRAMA....: HBSI20AO                                      *
+      *    PROGRAMA....: HBSI20BO                                      *
       *    PROGRAMADOR.: TADEU COSTA DE OLIVEIRA                       *
       *    DATA........: 25/03/2019                                    *
       *----------------------------------------------------------------*
-      *    OBJETIVO....: PROGRAMA PARA CADASTRO DE CLIENTES            *                                                                          
+      *    OBJETIVO....: PROGRAMA PARA CADASTRO DE VENDEDORES          *
       *----------------------------------------------------------------*
       *    BOOKS USADOS:                                               *
       *    HBSINXXX - DESCRICAO DO BOOK                                *
@@ -45,7 +45,7 @@
       *
       *----------------------------------------------------------------*
        01  FILLER                      PIC  X(050)     VALUE
-           ' HBSI20AO - INICIO DA AREA DE WORKING '.
+           ' HBSI20BO - INICIO DA AREA DE WORKING '.
       *----------------------------------------------------------------*
       *
       *----------------------------------------------------------------*
@@ -59,14 +59,14 @@
       *
       *----------------------------------------------------------------*
        01  FILLER                      PIC  X(050)     VALUE
-           ' HBSI20AO - FIM DA AREA DE WORKING '.
+           ' HBSI20BO - FIM DA AREA DE WORKING '.
       *----------------------------------------------------------------*
       *
       *----------------------------------------------------------------*
        SCREEN SECTION.
       *----------------------------------------------------------------*
       *
-       01  TELA-CLIENTE.
+       01  TELA-VENDEDOR.
 
       *
       *================================================================*
@@ -94,7 +94,7 @@
        1000-INICIALIZAR                SECTION.
       *----------------------------------------------------------------*
       *
-           DISPLAY "Programa de cadastro de clientes".
+           DISPLAY "Programa de cadastro de vendedores".
       *    PERFORM 1010-LOOP-MENU UNTIL WRK-OPCAO EQUAL "99.99".
            .
       *
@@ -131,7 +131,7 @@
        2000-PROCESSAR                  SECTION.
       *----------------------------------------------------------------*
       *
-           DISPLAY "Processando cliente".
+           DISPLAY "Processando vendedores".
       *
       *----------------------------------------------------------------*
        2000-99-FIM.                    EXIT.
