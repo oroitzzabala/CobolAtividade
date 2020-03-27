@@ -11,12 +11,6 @@
       *    DATA........: 25/03/2019                                    *
       *----------------------------------------------------------------*
       *    OBJETIVO....: PROGRAMA PARA CADASTRO DE CLIENTES            *                                                                          
-      *----------------------------------------------------------------*
-      *    BOOKS USADOS:                                               *
-      *    HBSINXXX - DESCRICAO DO BOOK                                *
-      *----------------------------------------------------------------*
-      *    MODULOS.....:                                               *
-      *    HBSINXXX - DESCRICAO DO MODULO                              *
       *================================================================*
       *
       *================================================================*
@@ -41,8 +35,6 @@
                          ACCESS MODE   IS DYNAMIC
                           RECORD KEY   IS FS-COD-CLI
                        ALTERNATE KEY   IS FS-CNPJ-CLI
-                       ALTERNATE KEY   IS FS-RAZ-SOCI-CLI               
-                                       WITH DUPLICATES
                            LOCK MODE   IS MANUAL
                          FILE STATUS   IS WRK-FS-ARQCLI01.
       *
@@ -100,11 +92,11 @@
            05 WRK-OPCAO                PIC X(002)      VALUE SPACES.
            05 WRK-SIM-NAO              PIC X(001)      VALUE SPACES.    
            05 WRK-COD-CLI-BUSC         PIC 9(007)      VALUE ZEROS.
-           05 WRK-PROVA-CNPJ           PIC 9(014)      VALUE ZEROS.
+           05 WRK-ARQ-IMP                PIC X(020)      VALUE SPACES.
            
        01  WRK-AREA-FS.
-           05 WRK-FS-ARQCLI01          PIC X(002)      VALUE "00".
            05 WRK-FS-ARQIMPCL          PIC X(002)      VALUE "00".
+           05 WRK-FS-ARQCLI01          PIC X(002)      VALUE "00".
       *
       *----------------------------------------------------------------*
        77 FILLER                       PIC  X(050)     VALUE
@@ -117,6 +109,13 @@
            05 WRK-RAZ-SOCI-CLI         PIC X(040).
            05 WRK-LAT-CLI              PIC S9(003)V9(008).
            05 WRK-LONG-CLI             PIC S9(003)V9(008).
+      *
+       01 LKS-PARM.
+           05 LKS-NUMERO-I               PIC 9(014).
+           05 LKS-NUMERO-F               PIC 9(014).
+           05 LKS-TIPO-CALCULO           PIC X(003).
+           05 LKS-ACAO                   PIC X(001).
+           05 LKS-RETORNO                PIC 9(001).    
       *
       *----------------------------------------------------------------*
        01  FILLER                      PIC  X(050)     VALUE
@@ -224,7 +223,21 @@
            05 BUSCA-NOVA                                 LINE  8 COL 29
                                        PIC X TO WRK-SIM-NAO.
       *
+       01  TELA-CLIENTE-EXISTE.
+           05 VALUE "CLIENTE JA EXISTE" BLANK SCREEN     LINE  6 COL 10.
+           05 VALUE "REALIZAR NOVO CADASTRO? (S/N)"      LINE  8 COL  2.
+           05 BUSCA-NOVA                                 LINE  8 COL 31
+                                       PIC X TO WRK-SIM-NAO.
+      *
        01  TELA-CLI-IMPORTACAO.
+           05 VALUE "CADASTRO DE CLIENTES - IMPORTACAO"  
+                                            BLANK SCREEN LINE  2 COL  2.
+           05 VALUE "NOME DO ARQUIVO DE IMPORTACAO:"     LINE  4 COL  2.
+           05 ARQ-IMPORTACAO                             LINE  4 COL 32
+                                       PIC X(020) TO WRK-ARQ-IMP.       
+           05 VALUE "REALIZAR IMPORTACAO? (S/N)"         LINE  8 COL  2.
+           05 BUSCA-NOVA                                 LINE  8 COL 28
+                                       PIC X TO WRK-SIM-NAO.
       *
       *================================================================*
        PROCEDURE DIVISION.                               
@@ -236,26 +249,12 @@
        0000-PRINCIPAL                  SECTION.
       *----------------------------------------------------------------*
       *
-           PERFORM 1000-INICIALIZAR
            PERFORM 2000-PROCESSAR
            PERFORM 3000-FINALIZAR
            .
       *
       *----------------------------------------------------------------*
        0000-99-FIM.                    EXIT.
-      *----------------------------------------------------------------*
-      *
-      *----------------------------------------------------------------*
-      *    ROTINA INICIAL DO PROGRAMA                                  *
-      *----------------------------------------------------------------*
-       1000-INICIALIZAR                SECTION.
-      *----------------------------------------------------------------*
-      *
-           OPEN I-O ARQCLI01
-           .
-      *
-      *----------------------------------------------------------------*
-       1000-99-FIM.                    EXIT.
       *----------------------------------------------------------------*
       *
       *----------------------------------------------------------------*
@@ -284,9 +283,9 @@
               WHEN "02"
                   PERFORM 2200-MENU-ALTERA-CLI                              
               WHEN "03"
-                  PERFORM 2300-EXCLUIR-CLI
+                  PERFORM 2300-MENU-EXCLUI-CLI
               WHEN "04"
-                  PERFORM 2400-IMPORTA-CLI
+                  PERFORM 2400-MENU-IMPORTA-CLI
               WHEN "05"
                   PERFORM 3000-FINALIZAR
            END-EVALUATE.
@@ -301,6 +300,7 @@
        2100-MENU-INCLUI-CLI            SECTION.
       *----------------------------------------------------------------*
       *
+           OPEN I-O ARQCLI01
            DISPLAY TELA-ADD-CLIENTE
            ACCEPT TELA-ADD-CLIENTE
            EVALUATE FUNCTION UPPER-CASE(WRK-SIM-NAO)
@@ -326,14 +326,34 @@
        2110-INCLUIR-CLI                SECTION.
       *----------------------------------------------------------------*
       *
-           MOVE WRK-AREA-ARQCLI01      TO FD-CLIENTE                    
-           
-           
-           
-           
-           
-           
-           .
+           MOVE WRK-CNPJ-CLI           TO LKS-NUMERO-I
+           MOVE WRK-AREA-ARQCLI01      TO FD-CLIENTE
+           MOVE 'CGC'                  TO LKS-TIPO-CALCULO
+           MOVE 'V'                    TO LKS-ACAO
+           MOVE ZEROS                  TO LKS-RETORNO
+           MOVE ZEROS                  TO LKS-NUMERO-F
+           CALL "HBSI30AO" USING LKS-PARM
+      *    
+           EVALUATE LKS-RETORNO
+               WHEN 0
+                   WRITE FD-CLIENTE
+               WHEN 1
+               WHEN 2
+               WHEN 3
+                   DISPLAY TELA-CLIENTE-EXISTE
+                   ACCEPT TELA-CLIENTE-EXISTE
+                   EVALUATE WRK-SIM-NAO
+                       WHEN "S"
+                           CLOSE ARQCLI01
+                           PERFORM 2100-MENU-INCLUI-CLI
+                       WHEN "N"
+                           CLOSE ARQCLI01
+                           PERFORM 3000-FINALIZAR
+                       WHEN OTHER
+                           CLOSE ARQCLI01
+                           PERFORM 3000-FINALIZAR
+                   END-EVALUATE
+           END-EVALUATE.
       *
       *----------------------------------------------------------------*
        2110-99-FIM.                    EXIT.
@@ -407,10 +427,45 @@
       *----------------------------------------------------------------*
       *    ROTINA PARA EXCLUIR UM CLIENTE                              *
       *----------------------------------------------------------------*
-       2300-EXCLUIR-CLI                SECTION.
+       2300-MENU-EXCLUI-CLI            SECTION.
       *----------------------------------------------------------------*
       *
-           .
+           OPEN I-O ARQCLI01
+           DISPLAY TELA-BUSCA-CLIENTE
+           ACCEPT TELA-BUSCA-CLIENTE
+           MOVE WRK-COD-CLI            TO FS-COD-CLI
+           READ ARQCLI01               RECORD INTO WRK-AREA-ARQCLI01
+                  KEY IS               FS-COD-CLI
+           IF WRK-FS-ARQCLI01 NOT EQUAL "00"
+               DISPLAY TELA-RESULT-BUSCA
+               ACCEPT TELA-RESULT-BUSCA
+               EVALUATE FUNCTION UPPER-CASE(WRK-SIM-NAO)
+                   WHEN "S"
+                       CLOSE ARQCLI01
+                       PERFORM 2300-MENU-EXCLUI-CLI
+                   WHEN "N"
+                       CLOSE ARQCLI01
+                       PERFORM 2010-MENU-CLIENTE
+                   WHEN OTHER
+                       CLOSE ARQCLI01
+                       PERFORM 2010-MENU-CLIENTE
+               END-EVALUATE
+           ELSE
+               DISPLAY TELA-EXC-CLIENTE
+               ACCEPT TELA-EXC-CLIENTE
+               EVALUATE FUNCTION UPPER-CASE(WRK-SIM-NAO)
+                   WHEN "S"
+                       DELETE ARQCLI01 RECORD
+                       CLOSE ARQCLI01
+                       PERFORM 2010-MENU-CLIENTE
+                   WHEN "N"
+                       CLOSE ARQCLI01
+                       PERFORM 2010-MENU-CLIENTE
+                   WHEN OTHER
+                       CLOSE ARQCLI01
+                       PERFORM 2010-MENU-CLIENTE
+               END-EVALUATE
+           END-IF.
       *
       *----------------------------------------------------------------*
        2300-99-FIM.                    EXIT.
@@ -419,13 +474,65 @@
       *----------------------------------------------------------------*
       *    ROTINA PARA IMPORTAR UM CLIENTE                             *
       *----------------------------------------------------------------*
-       2400-IMPORTA-CLI                SECTION.
+       2400-MENU-IMPORTA-CLI           SECTION.
       *----------------------------------------------------------------*
       *
-           .
+           DISPLAY TELA-CLI-IMPORTACAO
+           ACCEPT TELA-CLI-IMPORTACAO
+      *    
+           EVALUATE FUNCTION UPPER-CASE(WRK-SIM-NAO)
+               WHEN "S"
+                   PERFORM 2410-IMPORTAR-CLI
+                   PERFORM 2010-MENU-CLIENTE
+               WHEN "N"
+                   PERFORM 2010-MENU-CLIENTE
+               WHEN OTHER
+                   PERFORM 2010-MENU-CLIENTE
+           END-EVALUATE.
       *
       *----------------------------------------------------------------*
        2400-99-FIM.                    EXIT.
+      *----------------------------------------------------------------*
+      *
+      *----------------------------------------------------------------*
+      *    ROTINA PARA IMPORTAR UM CLIENTE                             *
+      *----------------------------------------------------------------*
+       2410-IMPORTAR-CLI               SECTION.
+      *----------------------------------------------------------------*
+      *
+           OPEN INPUT ARQIMPCL
+      *
+           IF WRK-FS-ARQIMPCL EQUAL ZEROS
+               OPEN I-O ARQCLI01
+      *        
+               PERFORM UNTIL WRK-FS-ARQIMPCL NOT EQUAL ZEROS
+                   READ ARQIMPCL
+                   IF WRK-FS-ARQIMPCL EQUAL ZEROS
+                       MOVE FD-IMP-CLIENTE
+                                       TO WRK-AREA-ARQCLI01
+                       MOVE WRK-CNPJ-CLI           
+                                       TO LKS-NUMERO-I
+                       MOVE WRK-AREA-ARQCLI01      
+                                       TO FD-CLIENTE
+                       MOVE 'CGC'      TO LKS-TIPO-CALCULO
+                       MOVE 'V'        TO LKS-ACAO
+                       MOVE ZEROS      TO LKS-RETORNO
+                       MOVE ZEROS      TO LKS-NUMERO-F
+      *                
+                       CALL "HBSI30AO" USING LKS-PARM                   
+      *                
+                       IF LKS-RETORNO EQUAL ZEROS
+                           WRITE FD-CLIENTE
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-IF
+      *    
+           CLOSE ARQCLI01
+           CLOSE ARQIMPCL.
+      *
+      *----------------------------------------------------------------*
+       2410-99-FIM.                    EXIT.
       *----------------------------------------------------------------*
       *
       *----------------------------------------------------------------*
@@ -435,7 +542,7 @@
       *----------------------------------------------------------------*
       *
            EXIT PROGRAM.
-
+      *
       *----------------------------------------------------------------*
        3000-99-FIM.                    EXIT.
       *----------------------------------------------------------------*

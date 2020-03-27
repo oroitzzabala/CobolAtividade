@@ -82,6 +82,7 @@
 		<file name="HBSI100O.cbl"/>
 		<file name="HBSI20AO.cbl"/>
 		<file name="HBSI20BO.cbl"/>
+		<file name="HBSI30AO.cbl"/>
 	</mffilelist>
 	<!-- COBOL copybook locations -->
 	<mffilelist id="cobol.copybook.locations">
@@ -105,6 +106,7 @@
 		<file name="HBSI100O${mf.objext}"/>
 		<file name="HBSI20AO${mf.objext}"/>
 		<file name="HBSI20BO${mf.objext}"/>
+		<file name="HBSI30AO${mf.objext}"/>
 	</mffilelist>
 	<!--  *************************  -->
 	<!--  * Configuration targets *  -->

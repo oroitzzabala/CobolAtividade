@@ -48,6 +48,7 @@
          <file compile="true" path="HBSI100O.cbl" xsi:type="cobolFile"/>
          <file compile="true" path="HBSI20AO.cbl" xsi:type="cobolFile"/>
          <file compile="true" path="HBSI20BO.cbl" xsi:type="cobolFile"/>
+         <file compile="true" path="HBSI30AO.cbl" xsi:type="cobolFile"/>
       </filetype>
       <filetype type="cobol.copybook" xsi:type="cobolFileContainer"/>
       <folders xsi:type="cobolFolderContainer"/>
